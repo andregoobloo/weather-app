@@ -42,15 +42,18 @@ const pickCity = async function (city) {
     console.log(`Feels like: ${weatherData.currentConditions.feelslike}°F`);
     console.log(`Sunrise: ${weatherData.currentConditions.sunrise}`);
     console.log(`Sunset: ${weatherData.currentConditions.sunset}`);
-    console.log(
-      `Tomorrows date: ${dayOfWeek(new Date(weatherData.days[1].datetime))}`
-    );
+    console.log(`Tomorrows date: ${dayOfWeek(weatherData.days[1].datetime)}`);
     console.log(
       `Tomorrow day/month: ${dayAndMonth(weatherData.days[1].datetime)}`
     );
-    console.log(
-      `Tomorrows weather description: ${weatherData.days[1].description}`
-    );
+
+    for (let i = 1; i <= 5; i++) {
+      console.log(
+        `Weather description for ${dayAndMonth(
+          weatherData.days[i].datetime
+        )}: ${weatherData.days[i].description}`
+      );
+    }
   } catch (error) {
     console.error(`Whoops! ${err}`);
   }
@@ -69,20 +72,17 @@ const loadImage = async function (condition) {
   }
 };
 
-const dayOfWeek = function (date) {
-  const day = new Date(date);
-  return days[day.getUTCDay()];
+const dayOfWeek = function (date, locale) {
+  const day = new Date(`${date}T00:00`);
+  const dayOfWeek = day.toLocaleString(locale, { weekday: "long" });
+  return dayOfWeek;
 };
 
 const dayAndMonth = function (date, locale) {
-  const day = new Date(date);
-  console.log(day);
+  const day = new Date(`${date}T00:00`);
   const finalDate = day.toLocaleString(locale, {
     month: "short",
     day: "numeric",
-    weekday: "long",
   });
-  return Date.UTC(finalDate);
+  return finalDate;
 };
-
-console.log(dayAndMonth("2024-09-17"));

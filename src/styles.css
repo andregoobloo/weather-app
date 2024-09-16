@@ -15,11 +15,64 @@ html {
   box-sizing: border-box;
 }
 
-/* body {
-  font-family: ;
-} */
+body {
+  /* font-family: ; */
+  font-size: 3rem;
+}
+
+.container {
+  background-color: rgb(230, 230, 230);
+  display: flex;
+  flex-direction: column;
+  gap: 10rem;
+  align-items: center;
+}
+
+/* Grid would be better */
+.current-weather {
+  border: 2px solid blue;
+  padding: 5rem;
+  display: flex;
+}
+
+/* Grid would be better */
+.upcoming-weather {
+  border: 2px solid red;
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  align-items: center;
+  padding: 5rem;
+}
+
+.upcoming-day {
+  display: flex;
+  gap: 6rem;
+}
+
+.current-weather-other-data {
+  border: 2px solid green;
+  padding: 5rem;
+}
 
 .weather-icon {
   width: 10rem;
   height: 10rem;
+}
+
+img {
+  display: inline-block;
+  width: 6rem;
+  height: auto;
+}
+
+.precip-probability {
+  display: flex;
+  font-size: 3rem;
+  justify-items: flex-end;
+}
+
+.precip-chance {
+  width: 3rem;
+  height: auto;
 }
