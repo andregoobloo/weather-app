@@ -1,4 +1,5 @@
 import "./styles.css";
+import waterDrop from "./weather-icons/water-drop.svg";
 
 // Use array to show 5-day weather forecast underneath current conditions
 
@@ -24,6 +25,9 @@ const days = [
   "Saturday",
 ];
 
+const body = document.querySelector(".main-body");
+const nextTenDays = document.querySelector(".upcoming-weather");
+
 const pickCity = async function (city) {
   try {
     const response = await fetch(
@@ -31,39 +35,77 @@ const pickCity = async function (city) {
     );
     const weatherData = await response.json();
     console.log(weatherData);
-    console.log(
-      `Current Condition: ${weatherData.currentConditions.conditions}`
-    );
-    console.log(`Icon: ${weatherData.currentConditions.icon}`);
-    loadImage(weatherData.currentConditions.icon);
-    console.log(`Low of the day: ${weatherData.days[0].tempmin}°F`);
-    console.log(`High of the day: ${weatherData.days[0].tempmax}°F`);
-    console.log(`Current Temp: ${weatherData.currentConditions.temp}°F`);
-    console.log(`Feels like: ${weatherData.currentConditions.feelslike}°F`);
-    console.log(`Sunrise: ${weatherData.currentConditions.sunrise}`);
-    console.log(`Sunset: ${weatherData.currentConditions.sunset}`);
-    console.log(`Tomorrows date: ${dayOfWeek(weatherData.days[1].datetime)}`);
-    console.log(
-      `Tomorrow day/month: ${dayAndMonth(weatherData.days[1].datetime)}`
-    );
 
-    for (let i = 1; i <= 5; i++) {
-      console.log(
-        `Weather description for ${dayAndMonth(
-          weatherData.days[i].datetime
-        )}: ${weatherData.days[i].description}`
-      );
+    const content = `<div class="current-weather">
+          <div class="current-weather-header">${weatherData.resolvedAddress} at ${weatherData.currentConditions.datetime}</div>
+          <div class="current-weather-data">
+            <h1>${weatherData.currentConditions.temp}°F</h1>
+            <h5>Feels like: ${weatherData.currentConditions.feelslike}°F</h5>
+            <p>${weatherData.currentConditions.conditions}</p>
+            <p>High ${weatherData.days[0].tempmax}°F - Low ${weatherData.days[0].tempmin}°F</p>
+          </div>
+          <img
+            src="#"
+            alt=""
+            class="current-weather-icon"
+          />
+          <div class="current-weather-other-data">
+            <p>Humidity: ${weatherData.currentConditions.humidity}%</p>
+            <p>Dew point: ${weatherData.currentConditions.dew}°F</p>
+            <p>Visibility: ${weatherData.currentConditions.visibility} mi</p>
+          </div>
+          <div class="current-weather-other-data-2">
+            <p>Wind: ${weatherData.currentConditions.windspeed} mph</p>
+            <p>Sunrise: ${weatherData.currentConditions.sunrise}</p>
+            <p>Sunset: ${weatherData.currentConditions.sunset}</p>
+          </div>
+        </div>`;
+
+    body.insertAdjacentHTML("afterbegin", content);
+    loadImage(weatherData.currentConditions.icon, ".current-weather-icon");
+
+    const weekAhead = async function (i) {
+      const upcomingDay = `<div class="upcoming-day">
+                <div class="upcoming-weather-date">
+                  <p class="upcoming-day-weekday">
+                  ${dayOfWeek(weatherData.days[i].datetime)}
+                    <span>${dayAndMonth(weatherData.days[i].datetime)}</span>
+                  </p>
+                </div>
+                <p class="upcoming-weather-temp">${
+                  weatherData.days[i].tempmax
+                }°F/<span>${weatherData.days[i].tempmin}°F</span></p>
+                <img
+                  src="#"
+                  alt=""
+                  class="upcoming-day-img-${i}"
+                />
+                <div class="precip-probability">
+                  <img
+                    src= ${waterDrop}
+                    alt="precipitation chance icon"
+                    class="precip-chance"
+                  />
+                  <p>${weatherData.days[i].precipprob}%</p>
+                </div>`;
+
+      nextTenDays.insertAdjacentHTML("beforeend", upcomingDay);
+      loadImage(weatherData.days[i].icon, `.upcoming-day-img-${i}`);
+    };
+
+    for (let i = 1; i <= 10; i++) {
+      weekAhead(i);
     }
   } catch (error) {
     console.error(`Whoops! ${err}`);
   }
 };
 
-// pickCity("ridgefield, ct");
+pickCity("omaha");
 
-const loadImage = async function (condition) {
+const loadImage = async function (condition, imgClass) {
   try {
-    const imgIcon = document.querySelector(".weather-icon");
+    const imgIcon = document.querySelector(imgClass);
     const icon = await import(`./weather-icons/${condition}.svg`);
     imgIcon.src = icon.default;
     imgIcon.alt = `${condition} icon`;
@@ -74,7 +116,7 @@ const loadImage = async function (condition) {
 
 const dayOfWeek = function (date, locale) {
   const day = new Date(`${date}T00:00`);
-  const dayOfWeek = day.toLocaleString(locale, { weekday: "long" });
+  const dayOfWeek = day.toLocaleString(locale, { weekday: "short" });
   return dayOfWeek;
 };
 
