@@ -15,18 +15,17 @@ import waterDrop from "./weather-icons/water-drop.svg";
 //
 // });
 
-const days = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
-
 const body = document.querySelector(".main-body");
-const nextTenDays = document.querySelector(".upcoming-weather");
+const search = document.querySelector(".search-city");
+
+search.addEventListener("submit", function (e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+  const input = formData.get("search");
+  body.innerHTML = "";
+  pickCity(input);
+  search.reset();
+});
 
 const pickCity = async function (city) {
   try {
@@ -35,6 +34,12 @@ const pickCity = async function (city) {
     );
     const weatherData = await response.json();
     console.log(weatherData);
+
+    const nextTenDays = document.createElement("div");
+    nextTenDays.classList.add("upcoming-weather");
+    const tenDayTitle = document.createElement("p");
+    tenDayTitle.textContent = "10-DAY WEATHER FORECAST";
+    tenDayTitle.classList.add("upcoming-weather-title");
 
     const content = `<div class="current-weather">
           <div class="current-weather-header">${weatherData.resolvedAddress} at ${weatherData.currentConditions.datetime}</div>
@@ -93,6 +98,9 @@ const pickCity = async function (city) {
       loadImage(weatherData.days[i].icon, `.upcoming-day-img-${i}`);
     };
 
+    body.append(nextTenDays);
+    nextTenDays.append(tenDayTitle);
+
     for (let i = 1; i <= 10; i++) {
       weekAhead(i);
     }
@@ -101,7 +109,7 @@ const pickCity = async function (city) {
   }
 };
 
-pickCity("omaha");
+// pickCity("omaha");
 
 const loadImage = async function (condition, imgClass) {
   try {
@@ -113,6 +121,16 @@ const loadImage = async function (condition, imgClass) {
     console.error(`Image failed to load... ${error}`);
   }
 };
+
+const days = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
 
 const dayOfWeek = function (date, locale) {
   const day = new Date(`${date}T00:00`);
