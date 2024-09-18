@@ -1,6 +1,8 @@
-/* :root{
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
-} */
+:root {
+  --secondar-color: #023047;
+}
 
 *,
 *::after,
@@ -16,7 +18,7 @@ html {
 }
 
 body {
-  /* font-family: ; */
+  font-family: "Inter", sans-serif;
   font-size: 2.5rem;
   background-color: #8ecae6;
 }
@@ -37,12 +39,12 @@ body {
 
 .current-weather {
   display: grid;
-  grid-template-columns: minmax(min-content, 400px) minmax(10px, 1fr) minmax(
+  grid-template-columns: minmax(min-content, 500px) minmax(10px, 1fr) minmax(
       min-content,
       200px
     );
-  grid-template-rows: minmax(min-content, 50px) 1fr min-content;
-  gap: 2rem;
+  grid-template-rows: minmax(min-content, 30px) 1fr min-content;
+  gap: 2.5rem;
   background-color: white;
   padding: 2rem;
   border-radius: 15px;
@@ -54,6 +56,9 @@ body {
 
 .current-weather-data {
   grid-area: 2/1/3/2;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .current-weather-icon {
@@ -62,6 +67,12 @@ body {
   justify-self: center;
   height: 12rem;
   width: auto;
+}
+
+.high-low-temps {
+  span {
+    font-size: 2rem;
+  }
 }
 
 .current-weather-other-data {
@@ -133,33 +144,63 @@ img {
 
 .precip-probability {
   display: flex;
-  font-size: 3rem;
+  font-size: 2.5rem;
   justify-self: center;
 }
 
 .precip-chance {
-  width: 3rem;
+  width: 2.5rem;
   height: auto;
 }
 
-.search-input {
-  width: 30rem;
-  margin-top: 2.4rem;
+header {
+  background-color: var(--secondar-color);
+  width: 100%;
+  height: 100px;
   display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-city {
+  display: flex;
+  gap: 1rem;
 }
 
 .search-bar {
   padding: 5px 6px;
   border: 0;
   border-radius: 25px;
-  width: 100%;
+  width: 30rem;
   text-align: center;
   font-size: 2rem;
   height: 4rem;
+  background-color: rgb(7, 101, 148);
+  color: white;
+  font-family: "Inter", sans-serif;
+}
+
+::placeholder {
+  color: white;
+  font-family: "Inter", sans-serif;
 }
 
 .search-bar:focus {
-  outline: none;
+  outline: 2px solid white;
+}
+
+.search-btn {
+  padding: 5px 6px;
+  border: 1px solid #023047;
+  border-radius: 12px;
+  font-size: 2rem;
+  height: 4rem;
+  cursor: pointer;
+  background-color: #023047;
+}
+
+.search-btn:hover {
+  border: 1px solid white;
 }
 
 .search-icon {
@@ -167,8 +208,16 @@ img {
   width: 2.5rem;
 }
 
+.logo {
+  position: absolute;
+  top: 1.6rem;
+  left: 2.5rem;
+  height: 6rem;
+  width: auto;
+}
+
 footer {
-  background-color: #023047;
+  background-color: var(--secondar-color);
   width: 100%;
   color: white;
   text-align: center;

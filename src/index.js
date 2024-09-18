@@ -1,22 +1,10 @@
 import "./styles.css";
+import { currentWeather, upcomingDay } from "./display";
 import waterDrop from "./weather-icons/water-drop.svg";
-
-// Use array to show 5-day weather forecast underneath current conditions
-
-// const userLocation = navigator.geolocation.getCurrentPosition(function (
-//   location
-// ) {
-//   const latitude = location.coords.latitude;
-//   const longitude = location.coords.longitude;
-
-//   fetch(
-//     `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${latitude},${longitude}?key=Y848J5XNQTC83DDAR68XQ9VEY`
-//   )
-//
-// });
 
 const body = document.querySelector(".main-body");
 const search = document.querySelector(".search-city");
+const searchBar = document.querySelector(".search-bar");
 
 search.addEventListener("submit", function (e) {
   e.preventDefault();
@@ -24,6 +12,7 @@ search.addEventListener("submit", function (e) {
   const input = formData.get("search");
   body.innerHTML = "";
   pickCity(input);
+  searchBar.blur();
   search.reset();
 });
 
@@ -32,42 +21,17 @@ const pickCity = async function (city) {
     const response = await fetch(
       `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?key=Y848J5XNQTC83DDAR68XQ9VEY`
     );
+
     const weatherData = await response.json();
     console.log(weatherData);
+
+    currentWeather(weatherData);
 
     const nextTenDays = document.createElement("div");
     nextTenDays.classList.add("upcoming-weather");
     const tenDayTitle = document.createElement("p");
     tenDayTitle.textContent = "10-DAY WEATHER FORECAST";
     tenDayTitle.classList.add("upcoming-weather-title");
-
-    const content = `<div class="current-weather">
-          <div class="current-weather-header">${weatherData.resolvedAddress} at ${weatherData.currentConditions.datetime}</div>
-          <div class="current-weather-data">
-            <h1>${weatherData.currentConditions.temp}°F</h1>
-            <h5>Feels like: ${weatherData.currentConditions.feelslike}°F</h5>
-            <p>${weatherData.currentConditions.conditions}</p>
-            <p>High ${weatherData.days[0].tempmax}°F - Low ${weatherData.days[0].tempmin}°F</p>
-          </div>
-          <img
-            src="#"
-            alt=""
-            class="current-weather-icon"
-          />
-          <div class="current-weather-other-data">
-            <p>Humidity: ${weatherData.currentConditions.humidity}%</p>
-            <p>Dew point: ${weatherData.currentConditions.dew}°F</p>
-            <p>Visibility: ${weatherData.currentConditions.visibility} mi</p>
-          </div>
-          <div class="current-weather-other-data-2">
-            <p>Wind: ${weatherData.currentConditions.windspeed} mph</p>
-            <p>Sunrise: ${weatherData.currentConditions.sunrise}</p>
-            <p>Sunset: ${weatherData.currentConditions.sunset}</p>
-          </div>
-        </div>`;
-
-    body.insertAdjacentHTML("afterbegin", content);
-    loadImage(weatherData.currentConditions.icon, ".current-weather-icon");
 
     const weekAhead = async function (i) {
       const upcomingDay = `<div class="upcoming-day">
@@ -93,7 +57,6 @@ const pickCity = async function (city) {
                   />
                   <p>${weatherData.days[i].precipprob}%</p>
                 </div>`;
-
       nextTenDays.insertAdjacentHTML("beforeend", upcomingDay);
       loadImage(weatherData.days[i].icon, `.upcoming-day-img-${i}`);
     };
@@ -105,7 +68,7 @@ const pickCity = async function (city) {
       weekAhead(i);
     }
   } catch (error) {
-    console.error(`Whoops! ${err}`);
+    console.error(`Whoops! ${error}`);
   }
 };
 
@@ -121,16 +84,6 @@ const loadImage = async function (condition, imgClass) {
     console.error(`Image failed to load... ${error}`);
   }
 };
-
-const days = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
 
 const dayOfWeek = function (date, locale) {
   const day = new Date(`${date}T00:00`);
